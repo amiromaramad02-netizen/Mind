@@ -55,7 +55,7 @@ class ProfilePage extends ConsumerWidget {
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         Text(
-          user?.email ?? 'guest@focusflow.com',
+          user?.email ?? 'guest@mindsync.com',
           style: TextStyle(color: Colors.grey[600]),
         ),
       ],

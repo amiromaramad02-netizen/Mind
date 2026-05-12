@@ -45,7 +45,7 @@ class _AIAssistantPageState extends ConsumerState<AIAssistantPage> {
                     padding: const EdgeInsets.all(24),
                     children: [
                       _buildAIBubble(
-                        "Hello! I'm your FocusFlow Assistant. How can I help you optimize your productivity today?",
+                        "Hello! I'm your MindSync Assistant. How can I help you optimize your productivity today?",
                       ).animate().fadeIn().slideY(begin: 0.1),
                       const SizedBox(height: 16),
                       _buildSuggestedActions(),

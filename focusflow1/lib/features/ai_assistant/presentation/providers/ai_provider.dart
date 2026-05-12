@@ -12,7 +12,7 @@ class AIConversation extends StateNotifier<List<Map<String, String>>> {
           {
             'role': 'assistant',
             'content':
-                "Hello! I'm your FocusFlow Assistant. How can I help you optimize your productivity today?",
+                "Hello! I'm your MindSync Assistant. How can I help you optimize your productivity today?",
           }
         ]);
 

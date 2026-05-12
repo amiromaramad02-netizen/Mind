@@ -20,7 +20,7 @@ class HomePage extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
-            title: const Text('FocusFlow'),
+            title: const Text('MindSync'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.bar_chart_outlined),
@@ -78,7 +78,7 @@ class HomePage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$greeting, FocusFlow User',
+          '$greeting, MindSync User',
           style: TextStyle(fontSize: 16, color: Colors.grey[600]),
         ),
         const SizedBox(height: 4),

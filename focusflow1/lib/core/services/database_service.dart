@@ -8,10 +8,10 @@ final databaseServiceProvider = FutureProvider<DatabaseService>((ref) async {
 });
 
 class DatabaseService {
-  static const tasksBox = 'focusflow_tasks';
-  static const sessionsBox = 'focusflow_sessions';
-  static const habitsBox = 'focusflow_habits';
-  static const settingsBox = 'focusflow_settings';
+  static const tasksBox = 'mindsync_tasks';
+  static const sessionsBox = 'mindsync_sessions';
+  static const habitsBox = 'mindsync_habits';
+  static const settingsBox = 'mindsync_settings';
 
   Future<void> init() async {
     await Hive.initFlutter();

@@ -13,13 +13,13 @@ class EnvConfig {
 
   static EnvConfig dev() => EnvConfig(
         environment: Environment.dev,
-        apiBaseUrl: 'https://dev-api.focusflow.com',
+        apiBaseUrl: 'https://dev-api.mindsync.com',
         enableLogging: true,
       );
 
   static EnvConfig prod() => EnvConfig(
         environment: Environment.prod,
-        apiBaseUrl: 'https://api.focusflow.com',
+        apiBaseUrl: 'https://api.mindsync.com',
         enableLogging: false,
       );
 }

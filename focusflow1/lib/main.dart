@@ -23,20 +23,20 @@ void main() async {
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: const FocusFlowApp(),
+      child: const MindSyncApp(),
     ),
   );
 }
 
-class FocusFlowApp extends ConsumerWidget {
-  const FocusFlowApp({super.key});
+class MindSyncApp extends ConsumerWidget {
+  const MindSyncApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'FocusFlow',
+      title: 'MindSync',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

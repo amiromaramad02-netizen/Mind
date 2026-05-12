@@ -92,7 +92,7 @@ class SettingsPage extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About FocusFlow'),
+            title: const Text('About MindSync'),
             subtitle: const Text('Version 1.0.0'),
             onTap: () {},
           ),

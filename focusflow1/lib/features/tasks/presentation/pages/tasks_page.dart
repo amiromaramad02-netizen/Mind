@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../domain/models/task.dart';
 import '../providers/tasks_provider.dart';
-import '../widgets/add_task_sheet.dart';
 
 class TasksPage extends ConsumerWidget {
   const TasksPage({super.key});
@@ -17,24 +16,21 @@ class TasksPage extends ConsumerWidget {
         title: const Text('My Tasks'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.sort),
-            onPressed: () {
-              // TODO: Implement sorting
-            },
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {},
           ),
         ],
       ),
       body: tasksAsync.when(
         data: (tasks) => tasks.isEmpty
             ? _buildEmptyState(context)
-            : _buildTaskList(context, ref, tasks),
+            : _buildTaskList(tasks),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTaskSheet(context),
-        label: const Text('New Task'),
-        icon: const Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -45,13 +41,13 @@ class TasksPage extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.assignment_turned_in_outlined,
+            Icons.task_alt,
             size: 100,
             color: Colors.grey[300],
-          ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+          ).animate().scale(duration: 600.ms, curve: Curves.backOut),
           const SizedBox(height: 24),
           const Text(
-            'All caught up!',
+            'All clear!',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -64,64 +60,39 @@ class TasksPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildTaskList(BuildContext context, WidgetRef ref, List<Task> tasks) {
+  Widget _buildTaskList(List<Task> tasks) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
-        return Dismissible(
-          key: Key(task.id.toString()),
-          direction: DismissDirection.endToStart,
-          background: Container(
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.only(right: 20),
-            decoration: BoxDecoration(
-              color: Colors.red.shade400,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(Icons.delete, color: Colors.white),
+        return Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.withOpacity(0.1)),
           ),
-          onDismissed: (_) {
-            if (task.id != null) {
-              ref.read(tasksListProvider.notifier).deleteTask(task.id!);
-            }
-          },
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.withValues(alpha: 0.1)),
-            ),
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              leading: _PriorityIndicator(priority: task.priority),
-              title: Text(
-                task.title,
-                style: TextStyle(
-                  decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-                  fontWeight: FontWeight.w600,
-                  color: task.isCompleted ? Colors.grey : null,
-                ),
-              ),
-              subtitle: Text(
-                '${task.completedPomodoros}/${task.estimatedPomodoros} Pomodoros',
-                style: TextStyle(color: Colors.grey[600], fontSize: 13),
-              ),
-              trailing: Transform.scale(
-                scale: 1.2,
-                child: Checkbox(
-                  value: task.isCompleted,
-                  onChanged: (value) {
-                    ref.read(tasksListProvider.notifier).toggleTaskCompletion(task);
-                  },
-                  shape: const CircleBorder(),
-                ),
+          margin: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: _PriorityIndicator(priority: task.priority),
+            title: Text(
+              task.title,
+              style: TextStyle(
+                decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ).animate().fadeIn(delay: (index * 50).ms).slideX(),
-        );
+            subtitle: Text('${task.completedPomodoros}/${task.estimatedPomodoros} Pomodoros'),
+            trailing: Checkbox(
+              value: task.isCompleted,
+              onChanged: (value) {
+                // TODO: Update task status
+              },
+              shape: const CircleBorder(),
+            ),
+          ),
+        ).animate().fadeIn(delay: (index * 50).ms).slideX();
       },
     );
   }
@@ -131,7 +102,7 @@ class TasksPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const AddTaskSheet(),
+      builder: (context) => _AddTaskSheet(),
     );
   }
 }
@@ -146,13 +117,13 @@ class _PriorityIndicator extends StatelessWidget {
     Color color;
     switch (priority) {
       case TaskPriority.high:
-        color = const Color(0xFFEF4444);
+        color = Colors.red;
         break;
       case TaskPriority.medium:
-        color = const Color(0xFFF59E0B);
+        color = Colors.orange;
         break;
       case TaskPriority.low:
-        color = const Color(0xFF10B981);
+        color = Colors.green;
         break;
     }
     return Container(
@@ -161,6 +132,82 @@ class _PriorityIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(2),
+      ),
+    );
+  }
+}
+
+class _AddTaskSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 24,
+        right: 24,
+        top: 24,
+      ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'New Task',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          const TextField(
+            decoration: InputDecoration(
+              hintText: 'What needs to be done?',
+              border: InputBorder.none,
+              hintStyle: TextStyle(fontSize: 18),
+            ),
+            autofocus: true,
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              const _TaskActionButton(icon: Icons.calendar_today, label: 'Today'),
+              const SizedBox(width: 12),
+              const _TaskActionButton(icon: Icons.flag_outlined, label: 'Priority'),
+              const Spacer(),
+              IconButton.filled(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_upward),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+}
+
+class _TaskActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _TaskActionButton({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: Colors.grey[700]),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(color: Colors.grey[700])),
+        ],
       ),
     );
   }

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.focusflow.mobile"
+    namespace = "app.mindsync.mobile"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "app.focusflow.mobile"
+        applicationId = "app.mindsync.mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

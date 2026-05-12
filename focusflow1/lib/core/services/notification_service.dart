@@ -38,7 +38,7 @@ class NotificationService {
   }) async {
     const androidDetails = AndroidNotificationDetails(
       'focus_flow_channel',
-      'FocusFlow Notifications',
+      'MindSync Notifications',
       importance: Importance.max,
       priority: Priority.high,
     );
