@@ -1,30 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'routes/app_router.dart';
-import 'theme/app_theme.dart';
-import 'config/app_config.dart';
+import 'package:mindsync/routes/app_router.dart';
+import 'package:mindsync/theme/app_theme.dart';
+import 'package:mindsync/core/services/database_service.dart';
+import 'package:mindsync/core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AppConfig.init();
-  runApp(const ProviderScope(child: FocusFlowApp()));
+
+  // We use a ProviderContainer to initialize services before the app runs
+  final container = ProviderContainer();
+
+  try {
+    // Initialize Isar
+    await container.read(databaseServiceProvider.future);
+    // Initialize Notifications
+    await container.read(notificationServiceProvider.future);
+  } catch (e) {
+    debugPrint('Error during initialization: $e');
+  }
+
+  runApp(
+    UncontrolledProviderScope(container: container, child: const MindSyncApp()),
+  );
 }
 
-class FocusFlowApp extends ConsumerWidget {
-  const FocusFlowApp({super.key});
+class MindSyncApp extends ConsumerWidget {
+  const MindSyncApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
+    final router = ref.watch(appRouterProvider);
+
     return MaterialApp.router(
-      title: 'FocusFlow',
+      title: 'MindSync',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
-      routerConfig: appRouter,
-      locale: const Locale('en'),
-      supportedLocales: const [Locale('en')],
+      themeMode: ThemeMode.system,
+      routerConfig: router,
     );
   }
 }
